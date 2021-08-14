@@ -14,6 +14,14 @@
         private string m_NameOfOwner;
         private string m_PhoneNumberOfOwner;
 
+        public VehicleDetails(Vehicle i_OwnerVehicle, string i_NameOfOwner, string i_PhoneNumberOfOwner)
+        {
+            Vehicle = i_OwnerVehicle;
+            NameOfOwner = i_NameOfOwner;
+            PhoneNumberOfOwner = i_PhoneNumberOfOwner;
+            m_CarStatus = eCarStatusInGarage.InRepair;
+        }
+
         public Vehicle Vehicle
         {
             get
