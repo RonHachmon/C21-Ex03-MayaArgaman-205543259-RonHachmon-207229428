@@ -1,5 +1,6 @@
-﻿using  System;
+﻿using System;
 using Ex03.GarageLogic;
+using System.Reflection;
 namespace Ex03.ConsoleUI
 {
     public class UserInterface
@@ -7,7 +8,7 @@ namespace Ex03.ConsoleUI
         public enum eMenuSelection
         {
 
-            InsertNewVehicle=1,
+            InsertNewVehicle = 1,
             LicenseList,
             ModifyStatus,
             InflateAir,
@@ -17,7 +18,7 @@ namespace Ex03.ConsoleUI
             Quit
         }
 
-        private Garage m_Garage= new Garage();
+        private Garage m_Garage = new Garage();
 
         public void Run()
         {
@@ -145,7 +146,51 @@ Please enter the license number of the vehicle:");
 
         private void rechargeVehicle()
         {
-            throw new NotImplementedException();
+            float amountToCharge;
+            string licenseNumber = getLicenseFromUser();
+            bool isValid = false;
+            Vehicle currentVehicle;
+            //To Do:
+            m_Garage.GetVehicleInGarage(licenseNumber, out currentVehicle);
+            MethodInfo FuelMethod = currentVehicle.GetType().GetMethod("ChargeEngine");
+            if(FuelMethod != null)
+            {
+                while(!isValid)
+                {
+                    try
+                    {
+                        amountToCharge = getHoursToCharge();
+                        FuelMethod.Invoke(currentVehicle, new object[] { amountToCharge });
+                        isValid = true;
+                        Console.WriteLine("Vehicle successfully charged");
+                    }
+                    catch(ValueOutOfRangeException ex)
+                    {
+                        Console.WriteLine(
+                            string.Format("You must enter a number between {0}-{1}", ex.MinValue, ex.MaxValue));
+                    }
+                    catch(FormatException)
+                    {
+                        Console.WriteLine("Invalid input.");
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Vehicle doesn't have electric engine,returning To main menu");
+            }
+        }
+
+        private float getHoursToCharge()
+        {
+            float userInput;
+            Console.WriteLine("Please enter Amount of Hours to Charge");
+            userInput = float.Parse(Console.ReadLine());
+            return userInput;
         }
 
         private void refuelVehicle()
@@ -156,6 +201,7 @@ Please enter the license number of the vehicle:");
         private eMenuSelection getUserChoice()
         {
             Console.WriteLine("Please enter a number between 1-8");
+            Console.WriteLine(string.Format("Please enter a number between {0}-{1}",1,8));
             string userChoice; 
             bool validInput = false;
             int input = 0;

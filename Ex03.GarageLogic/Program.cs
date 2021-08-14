@@ -1,24 +1,39 @@
 ﻿ using System;
+ using System.Reflection;
 
-namespace Ex03.GarageLogic
+ namespace Ex03.GarageLogic
 {
     public class Program
     {
         public static void Main()
         {
-            FuelEngine a = new FuelEngine();
-            a.CurrentAmountFuel = 10;
-            try
-            {
-                a.AddFuel(20 , FuelEngine.eFuelType.Octan95);
-                Console.WriteLine("Hello");
+            Vehicle a = new ElectricCar("123");
+            ElectricCar b = new ElectricCar("123");
+            string className = a.ToString();
+            Console.WriteLine(((ElectricCar)a).CurrentEnergyHours);
 
-            }
-            catch(Exception ValueOutOfRangeException)
+            if (className.Contains("Electric"))
             {
-                Console.WriteLine(ValueOutOfRangeException);
-                throw;
+                Console.WriteLine("YAY");
             }
+
+            MethodInfo FuelMethod = a.GetType().GetMethod("ChargeEngine");
+            FuelMethod.Invoke(a, new object[] { 1.2f });
+            Console.WriteLine(((ElectricCar)a).CurrentEnergyHours);
+
+            //FuelEngine a = new FuelEngine();
+            //a.CurrentAmountFuel = 10;
+            //try
+            //{
+            //    a.AddFuel(20 , FuelEngine.eFuelType.Octan95);
+            //    Console.WriteLine("Hello");
+
+            //}
+            //catch(Exception ValueOutOfRangeException)
+            //{
+            //    Console.WriteLine(ValueOutOfRangeException);
+            //    throw;
+            //}
         }
     }
 }

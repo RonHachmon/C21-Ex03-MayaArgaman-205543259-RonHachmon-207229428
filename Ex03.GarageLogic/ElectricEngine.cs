@@ -7,7 +7,12 @@ namespace Ex03.GarageLogic
         private readonly float r_MaximumEnergyHours;
         private float m_CurrentEnergyHoursLeft;
 
-        public float CurrentEneryHours
+        public ElectricEngine(float i_MaximumEnergyHours)
+        {
+            r_MaximumEnergyHours = i_MaximumEnergyHours;
+        }
+
+        public float CurrentEnergyHours
         {
             get
             {
@@ -27,7 +32,7 @@ namespace Ex03.GarageLogic
 
         public void ChargeBattery(float i_BatteryCharge)
         {
-            this.CurrentEneryHours += i_BatteryCharge;
+            this.CurrentEnergyHours += i_BatteryCharge;
         }
     }
 }

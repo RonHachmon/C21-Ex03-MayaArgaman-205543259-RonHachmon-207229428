@@ -14,5 +14,11 @@
         protected const int k_MaxAirPressure = 30;
         private eLicenseType m_LicenseType;
         private int m_EngineCapacity;
+
+        public Motorcycle(string i_License) : base(i_License, k_NumOfWheels, k_MaxAirPressure)
+        {
+
+        }
+
     }
 }

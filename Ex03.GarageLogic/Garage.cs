@@ -35,5 +35,10 @@ namespace Ex03.GarageLogic
                 r_VehiclesInGarage.Add(i_LicensePlate, temp);
             }
         }
+
+        public void GetVehicleInGarage(string licenseNumber, out Vehicle currentVehicle)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

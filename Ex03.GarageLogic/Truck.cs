@@ -1,6 +1,6 @@
 ﻿namespace Ex03.GarageLogic
 {
-    public class Truck :Vehicle
+    public class Truck : Vehicle
     {
         private const int k_NumOfWheels = 16;
         private const int k_MaxAirPressure = 26;
@@ -10,5 +10,15 @@
         private float m_CargoCapacity;
         private FuelEngine m_FuelEngine;
 
+        public Truck(string i_License) : base(i_License, k_NumOfWheels, k_MaxAirPressure)
+        {
+
+            m_FuelEngine = new FuelEngine(k_MaximumAmountOfFuel, k_FuelType);
+        }
+
+        public void AddFuel(float i_Fuel, FuelEngine.eFuelType i_FuelType)
+        {
+            m_FuelEngine.AddFuel(i_Fuel, i_FuelType);
+        }
     }
 }

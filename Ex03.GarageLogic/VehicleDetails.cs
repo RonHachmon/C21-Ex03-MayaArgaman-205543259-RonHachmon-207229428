@@ -4,7 +4,9 @@
     {
         public enum eCarStatusInGarage
         {
-            InRepair = 1, Repaired, Paied
+            InRepair = 1,
+            Repaired,
+            Paied
         }
 
         private eCarStatusInGarage m_CarStatus;
@@ -44,6 +46,7 @@
             {
                 return m_NameOfOwner;
             }
+
             set
             {
                 m_NameOfOwner = value;

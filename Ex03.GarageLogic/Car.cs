@@ -24,5 +24,9 @@
         protected const int k_MaxAirPressure = 32;
         protected eNumOfDoors m_NumOfDoors;
         protected eCarColor m_CarColor;
+
+        public Car(string i_License) : base(i_License, k_NumOfWheels, k_MaxAirPressure)
+        {
+        }
     }
 }
