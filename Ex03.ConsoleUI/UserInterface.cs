@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Ex03.GarageLogic;
 using System.Reflection;
 namespace Ex03.ConsoleUI
@@ -27,7 +28,7 @@ namespace Ex03.ConsoleUI
             bool keepRunning = true;
             eMenuSelection userChoice;
             printOptions();
-            userChoice = (eMenuSelection) getUserChoice(k_MinMenuSelectionRange, k_MaxMenuSelectionRange);
+            userChoice = (eMenuSelection)getUserChoice(k_MinMenuSelectionRange, k_MaxMenuSelectionRange);
             while (keepRunning)
             {
                 switch (userChoice)
@@ -37,7 +38,7 @@ namespace Ex03.ConsoleUI
                         break;
 
                     case eMenuSelection.LicenseList:
-                        viewListOfLicenseNumbers();
+                        showListOfLicenseNumbers();
                         break;
 
                     case eMenuSelection.ModifyStatus:
@@ -74,6 +75,26 @@ namespace Ex03.ConsoleUI
             }
         }
 
+        private void printStatusOptions()
+        {
+            Console.WriteLine(
+                @"
+Please choose one of the following options : 
+1. InRepair.
+2. Repaired.
+3. Paid. 
+");
+        }
+
+        private void printOptionsofFilteringStatus()
+        {
+            Console.WriteLine(@"
+Please choose one of the following options : 
+1. All licenses
+2. select specific status   
+");
+        }
+
         private void printOptions()
         {
             Console.WriteLine(@"
@@ -87,6 +108,60 @@ Please choose one of the following options :
 7. View full vehicle data by license number.
 8. Quit program.
 ");
+        }
+
+        private VehicleDetails.eCarStatusInGarage getNewStatusFromUser()
+        {
+            bool keepRunning = true;
+            printStatusOptions();
+            VehicleDetails.eCarStatusInGarage userChoice = (VehicleDetails.eCarStatusInGarage)getUserChoice(1, 3);
+            while (keepRunning)
+            {
+                switch ((VehicleDetails.eCarStatusInGarage)userChoice)
+                {
+                    case VehicleDetails.eCarStatusInGarage.InRepair:
+                        keepRunning = false;
+                        break;
+
+                    case VehicleDetails.eCarStatusInGarage.Repaired:
+                        keepRunning = false;
+
+                        break;
+
+                    case VehicleDetails.eCarStatusInGarage.Paid:
+                        keepRunning = false;
+                        break;
+                }
+
+                if (keepRunning)
+                {
+                    Console.WriteLine("Invalid Input, Please try again");
+                    printStatusOptions();
+                }
+            }
+
+            return userChoice;
+        }
+
+        private void showListOfLicenseNumbers()
+        {
+            printOptionsofFilteringStatus();
+            int userChoice = getUserChoice(1, 2);
+            if (userChoice == 1)
+            {
+                m_Garage.GetAllLicensePlate();
+            }
+            else
+            {
+                {
+                    if (userChoice == 2)
+                    {
+                        printStatusOptions();
+                        userChoice = getUserChoice(1, 3);
+                        m_Garage.GetLicensePlateByStatus((VehicleDetails.eCarStatusInGarage)userChoice);
+                    }
+                }
+            }
         }
 
         private string getLicenseFromUser()
@@ -122,15 +197,118 @@ Please enter the license number of the vehicle:");
 
         private void insertVehicle()
         {
+            string lisencePlate = getLicenseFromUser();
+            string customerPhoneNumber;
+            string name;
+            VehiclesBuilder.eVehicleType vehicleType;
+            Vehicle currentVehicle=null;
+            
+            m_Garage.GetVehicleInGarage(lisencePlate, out currentVehicle);
+            if (currentVehicle == null)
+            {
+                vehicleType = getVehicleType();
+                currentVehicle = VehiclesBuilder.CreateVehicle(vehicleType, lisencePlate);
+
+
+
+                Console.WriteLine("Please enter your name");
+                name = Console.ReadLine();
+                Console.WriteLine("Please enter your phone number");
+                customerPhoneNumber = Console.ReadLine();
+                VehicleDetails customVehicleDetails = new VehicleDetails(currentVehicle, name, customerPhoneNumber);
+                m_Garage.AddVehicle(customVehicleDetails);
+            }
+            else
+            {
+                m_Garage.ChangeCarStatus(lisencePlate, VehicleDetails.eCarStatusInGarage.InRepair);
+            }
+
             throw new NotImplementedException();
         }
+
+        //private void insertDetailsToNewVehicle(Vehicle i_NewVehicle)
+        //{
+        //    List<string> vehicleInputsList = i_NewVehicle.BuildVehicleInputsList();
+        //    Type typeOfObject = i_NewVehicle.GetType();
+        //    MethodInfo[] allMethodsOfObj = typeOfObject.GetMethods();
+        //    Array.Reverse(allMethodsOfObj);
+        //    int i = 0;
+
+        //    foreach (MethodInfo method in allMethodsOfObj)
+        //    {
+        //        if (isSetMethod(method))
+        //        {
+        //            bool isValidInputToMethod = false;
+        //            ParameterInfo[] allParams = method.GetParameters();
+
+        //            while (!isValidInputToMethod)
+        //            {
+        //                isValidInputToMethod = useSetMethod(i_NewVehicle, method, vehicleInputsList, allParams, ref i);
+        //            }
+        //        }
+        //    }
+        //}
+
+        //private bool useSetMethod(Vehicle i_NewVehicle, MethodInfo i_Method, List<string> i_VechileInputsList, ParameterInfo[] i_AllParams, ref int io_Index)
+        //{
+        //    bool isValidInput = false;
+        //    int j = io_Index;
+
+        //    try
+        //    {
+        //        List<object> setMethodInputsList = new List<object>();
+
+        //        foreach (ParameterInfo param in i_AllParams)
+        //        {
+        //            Console.WriteLine("Please enter {0}", i_VechileInputsList[io_Index]);
+        //            setMethodInputsList.Add(Console.ReadLine());
+        //            io_Index++;
+        //        }
+
+        //        i_Method.Invoke(i_NewVehicle, setMethodInputsList.ToArray());
+        //        isValidInput = true;
+        //    }
+        //    catch (TargetInvocationException ex)
+        //    {
+        //        if (ex.InnerException is ValueOutOfRangeException)
+        //        {
+        //            ValueOutOfRangeException innerException = ex.InnerException as ValueOutOfRangeException;
+        //            Console.WriteLine(string.Format("You must enter a number between {0}-{1}{2}", innerException.MinValue, innerException.MaxValue, Environment.NewLine));
+        //        }
+        //        else if (ex.InnerException is FormatException)
+        //        {
+        //            FormatException innerException = ex.InnerException as FormatException;
+        //            Console.WriteLine("{0}{1}", innerException.Message, Environment.NewLine);
+        //        }
+        //        else if (ex.InnerException is ArgumentException)
+        //        {
+        //            ArgumentException innerException = ex.InnerException as ArgumentException;
+        //            Console.WriteLine("{0}{1}", innerException.Message, Environment.NewLine);
+        //        }
+
+        //        io_Index = j;
+        //    }
+
+        //    return isValidInput;
+        //}
+
+        //private bool isSetMethod(MethodInfo i_Method)
+        //{
+        //    string methodName = i_Method.Name;
+
+        //    return methodName.Contains("Set");
+        //}
 
         private void viewListOfLicenseNumbers()
         {
             throw new NotImplementedException();
         }
+
         private void changeVehicleStatusInGarage()
         {
+            string lisencePlate = getLicenseFromUser();
+            VehicleDetails.eCarStatusInGarage newStatus = getNewStatusFromUser();
+            m_Garage.ChangeCarStatus(lisencePlate, newStatus);
             throw new NotImplementedException();
         }
 
@@ -235,14 +413,29 @@ Please enter the license number of the vehicle:");
             }
         }
 
+        private VehiclesBuilder.eVehicleType getVehicleType()
+        {
+            VehiclesBuilder.eVehicleType userVehicleType;
+            Array array = Enum.GetValues(typeof(VehiclesBuilder.eVehicleType));
+            //Console.WriteLine("Please choose vehicle type:");
+            foreach (VehiclesBuilder.eVehicleType VehicleType in array)
+            {
+                Console.WriteLine("for {0} Press {1}", VehicleType.ToString(), VehicleType.GetHashCode());
+            }
+
+            userVehicleType = (VehiclesBuilder.eVehicleType)getUserChoice(VehiclesBuilder.MinAmountOfVehicle, VehiclesBuilder.MaxAmountOfVehicle);
+
+            return userVehicleType;
+        }
+
         private FuelEngine.eFuelType getFuelType()
         {
             FuelEngine.eFuelType userFuelType;
             Array array = Enum.GetValues(typeof(FuelEngine.eFuelType));
-            Console.WriteLine("Please choose fuel type:");
+            Console.WriteLine("Please choose vehicle type:");
             foreach (FuelEngine.eFuelType fuelType in array)
             {
-                Console.WriteLine(string.Format("for {0} Press {1}", fuelType.ToString(), fuelType.GetHashCode()));
+                Console.WriteLine("for {0} Press {1}", fuelType.ToString(), fuelType.GetHashCode());
             }
 
             userFuelType = (FuelEngine.eFuelType) getUserChoice(k_MinMenuSelectionRange, k_MaxMenuSelectionRange);

@@ -23,18 +23,20 @@ namespace Ex03.GarageLogic
         private readonly Dictionary<string, VehicleDetails> r_VehiclesInGarage =
             new Dictionary<string, VehicleDetails>();
 
-        public void AddVehicle(string i_LicensePlate)
+        public void AddVehicle(VehicleDetails i_CustomerDetails)
         {
-            VehicleDetails temp;
-            if (r_VehiclesInGarage.TryGetValue(i_LicensePlate, out temp))
-            {
-                temp.CarStatus = VehicleDetails.eCarStatusInGarage.InRepair;
-                throw new ArgumentException("License already Exist");
-            }
-            else
-            {
-                r_VehiclesInGarage.Add(i_LicensePlate, temp);
-            }
+
+            r_VehiclesInGarage.Add(i_CustomerDetails.Vehicle.License, i_CustomerDetails);
+            //VehicleDetails temp;
+            //if (r_VehiclesInGarage.TryGetValue(i_LicensePlate, out temp))
+            //{
+            //    temp.CarStatus = VehicleDetails.eCarStatusInGarage.InRepair;
+            //    throw new ArgumentException("License already Exist");
+            //}
+            //else
+            //{
+            //    r_VehiclesInGarage.Add(i_LicensePlate, temp);
+            //}
         }
 
         public List<string> GetAllLicensePlate()
@@ -77,9 +79,21 @@ namespace Ex03.GarageLogic
             }
         }
 
-        public void GetVehicleInGarage(string licenseNumber, out Vehicle currentVehicle)
+        public void CheckIfVehicleInGarage(string i_LicenseNumber)
         {
-                throw new NotImplementedException();
+            if (!r_VehiclesInGarage.ContainsKey(i_LicenseNumber))
+            {
+                throw new Exception("Error-the vehicle does not exist in the garage.");
+            }
+
+        }
+
+     
+        public void GetVehicleInGarage(string i_LicenseNumber, out Vehicle i_CurrentVehicle)
+        {
+            i_CurrentVehicle = null;
+            CheckIfVehicleInGarage(i_LicenseNumber);
+            i_CurrentVehicle = r_VehiclesInGarage[i_LicenseNumber].Vehicle;
         }
     }
 }
