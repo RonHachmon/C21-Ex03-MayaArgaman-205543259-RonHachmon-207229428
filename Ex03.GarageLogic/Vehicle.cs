@@ -4,11 +4,23 @@ namespace Ex03.GarageLogic
 {
     public abstract class Vehicle
     {
-        protected string m_VehicleModel;
-        protected string m_LicensePlate;
-        protected float m_RemainingEnergy;
-        protected readonly List<Wheel> r_Wheels = new List<Wheel>();
+        private string m_VehicleModel;
+        private string m_LicensePlate;
+        private float m_RemainingEnergy;
+        private List<Wheel> r_Wheels = new List<Wheel>();
 
+        public List<Wheel> Wheels
+        {
+            get
+            {
+                return r_Wheels;
+            }
+
+            set
+            {
+                r_Wheels = value;
+            }
+        }
 
     }
 }

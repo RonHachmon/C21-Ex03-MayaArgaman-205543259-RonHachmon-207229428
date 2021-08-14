@@ -87,6 +87,16 @@ Please choose one of the following options :
 ");
         }
 
+        private void printConditionOptions()
+        {
+            Console.WriteLine(@"
+Please choose one of the following options : 
+1. InRepair.
+2. Repaired.
+3. Paied. 
+");
+        }
+
         private string getLicenseFromUser()
         {
             bool validChoice = false;
@@ -117,6 +127,43 @@ Please enter the license number of the vehicle:");
 
             return licenseInput;
         }
+/*
+        private int getNewConditionFromUser()
+        {
+            bool keepRunning = true;
+            int userChoice;
+            int choice;
+            printConditionOptions();
+            userChoice = Console.ReadLine();
+            while (keepRunning)
+            {
+                switch ((VehicleDetails.eCarStatusInGarage)userChoice)
+                {
+                    case VehicleDetails.eCarStatusInGarage.InRepair ;
+                        keepRunning = false;
+                        break;
+
+                    case eCarStatusInGarage.Repaired:
+                        keepRunning = false;
+
+                        break;
+
+                    case eCarStatusInGarage.Paied:
+                        keepRunning = false;
+                        break;
+                }
+
+                if (keepRunning)
+                {
+                    Console.WriteLine("Invalid Input, Please try again");
+                    printConditionOptions();
+                }
+            }
+
+            return userChoice;
+        }
+*/
+
 
         private void insertVehicle()
         {

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Xml.Serialization;
+using static Ex03.GarageLogic.VehicleDetails;
 
 namespace Ex03.GarageLogic
 {
@@ -10,10 +12,10 @@ namespace Ex03.GarageLogic
         //    NameOfOwner, PhoneNumberOfOwner, CarStatusInGarage
         //}
 
-        public enum eCarStatusInGarage
-        {
-            InRepair = 1, Repaired, Paied
-        }
+       // public enum eCarStatusInGarage
+        //{
+          //  InRepair = 1, Repaired, Paied
+        //}
 
         private string m_NameOfOwner;
         private string m_PhoneNumberOfOwner;
@@ -33,6 +35,46 @@ namespace Ex03.GarageLogic
             else
             {
                 r_VehiclesInGarage.Add(i_LicensePlate, temp);
+            }
+        }
+
+        public List<string> GetAllLicensePlate()
+        {
+            List<string> allLicensePlateList = new List<string>();
+            foreach (string licensePlate in r_VehiclesInGarage.Keys)
+            {
+                allLicensePlateList.Add(licensePlate);
+            }
+
+            return allLicensePlateList;
+        }
+
+        public List<string> GetLicensePlateByStatus(eCarStatusInGarage status)
+        {
+            List<string> licensePlateList = new List<string>();
+            foreach (string licensePlate in r_VehiclesInGarage.Keys)
+            {
+                if(r_VehiclesInGarage[licensePlate].CarStatus == status)
+                {
+                    licensePlateList.Add(licensePlate);
+                }
+            }
+
+            return licensePlateList;
+        }
+
+        public void ChangeCarStatus(string licensePlate, eCarStatusInGarage status)
+        {
+            r_VehiclesInGarage[licensePlate].CarStatus = status;
+        }
+
+        public void InflateAirToMax(string licensePlate)
+        {
+            List<Wheel> wheels = r_VehiclesInGarage[licensePlate].Vehicle.Wheels;
+            float maxPressure = r_VehiclesInGarage[licensePlate].Vehicle.Wheels[0].MaxAirPressure;
+            foreach (Wheel wheel in wheels)
+            {
+                wheel.CurrentAirPressure = maxPressure;
             }
         }
     }

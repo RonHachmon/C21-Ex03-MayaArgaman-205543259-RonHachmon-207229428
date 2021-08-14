@@ -12,6 +12,19 @@
         private string m_NameOfOwner;
         private string m_PhoneNumberOfOwner;
 
+        public Vehicle Vehicle
+        {
+            get
+            {
+                return m_Vehicle;
+            }
+
+            set
+            {
+                m_Vehicle = value;
+            }
+        }
+
         public eCarStatusInGarage CarStatus
         {
             get
@@ -49,6 +62,6 @@
                 m_NameOfOwner = value;
             }
         }
-
+        
     }
 }
