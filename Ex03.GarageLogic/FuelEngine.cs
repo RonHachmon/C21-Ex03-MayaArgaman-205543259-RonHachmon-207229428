@@ -16,6 +16,12 @@ namespace Ex03.GarageLogic
         private readonly float r_MaximumAmountOfFuel;
         private float m_CurrentAmountFuel;
 
+        public FuelEngine(float i_MaximumAmountOfFuel, eFuelType i_FuelType)
+        {
+            r_FuelType = i_FuelType;
+            r_MaximumAmountOfFuel = i_MaximumAmountOfFuel;
+        }
+
         public float CurrentAmountFuel
         {
             get

@@ -16,11 +16,6 @@ namespace Ex03.GarageLogic
                 return r_Wheels;
             }
 
-            set
-            {
-                r_Wheels = value;
-            }
-        }
 
     }
 }
