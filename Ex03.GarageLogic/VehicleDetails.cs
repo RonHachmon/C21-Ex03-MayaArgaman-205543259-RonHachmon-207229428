@@ -6,13 +6,26 @@
         {
             InRepair = 1,
             Repaired,
-            Paied
+            Paid
         }
 
         private eCarStatusInGarage m_CarStatus;
         private Vehicle m_Vehicle;
         private string m_NameOfOwner;
         private string m_PhoneNumberOfOwner;
+
+        public Vehicle Vehicle
+        {
+            get
+            {
+                return m_Vehicle;
+            }
+
+            set
+            {
+                m_Vehicle = value;
+            }
+        }
 
         public eCarStatusInGarage CarStatus
         {
@@ -52,6 +65,5 @@
                 m_NameOfOwner = value;
             }
         }
-
     }
 }

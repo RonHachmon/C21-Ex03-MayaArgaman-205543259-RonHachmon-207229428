@@ -4,18 +4,18 @@ namespace Ex03.GarageLogic
 {
     public abstract class Vehicle
     {
-        protected string m_VehicleModel;
-        protected string m_LicensePlate;
-        protected float m_RemainingEnergy;
-        protected readonly List<Wheel> r_Wheels = new List<Wheel>();
+        private string m_VehicleModel;
+        private string m_LicensePlate;
+        private float m_RemainingEnergy;
+        private List<Wheel> r_Wheels = new List<Wheel>();
 
-        public Vehicle(string i_License, int i_AmountOfWheels, float i_MaxAirPressure)
+        public List<Wheel> Wheels
         {
-            m_LicensePlate = i_License;
-            for(int i = 0; i < i_AmountOfWheels; i++)
+            get
             {
-                r_Wheels.Add(new Wheel(i_MaxAirPressure));
+                return r_Wheels;
             }
-        }
+
+
     }
 }
