@@ -12,6 +12,8 @@ namespace Ex03.GarageLogic
             Soler
         }
 
+        private const int k_MinFuelRange = 1;
+        private const int k_MaxFuelRange = 4;
         private readonly eFuelType r_FuelType;
         private readonly float r_MaximumAmountOfFuel;
         private float m_CurrentAmountFuel;
@@ -20,6 +22,22 @@ namespace Ex03.GarageLogic
         {
             r_FuelType = i_FuelType;
             r_MaximumAmountOfFuel = i_MaximumAmountOfFuel;
+        }
+
+        public int MinFuelRange
+        {
+            get
+            {
+                return k_MinFuelRange;
+            }
+        }
+
+        public int MaxFuelRange
+        {
+            get
+            {
+                return k_MaxFuelRange;
+            }
         }
 
         public float CurrentAmountFuel
@@ -33,7 +51,7 @@ namespace Ex03.GarageLogic
             {
                 if (value > r_MaximumAmountOfFuel)
                 {
-                    throw new ValueOutOfRangeException(0, r_MaximumAmountOfFuel);
+                    throw new ValueOutOfRangeException(0, r_MaximumAmountOfFuel- m_CurrentAmountFuel);
                 }
 
                 m_CurrentAmountFuel = value;

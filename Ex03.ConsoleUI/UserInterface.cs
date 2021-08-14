@@ -18,15 +18,16 @@ namespace Ex03.ConsoleUI
             Quit
         }
 
+        private const int k_MinMenuSelectionRange = 1;
+        private const int k_MaxMenuSelectionRange = 8;
         private Garage m_Garage = new Garage();
 
         public void Run()
         {
             bool keepRunning = true;
             eMenuSelection userChoice;
-            int choice;
             printOptions();
-            userChoice = getUserChoice();
+            userChoice = (eMenuSelection) getUserChoice(k_MinMenuSelectionRange, k_MaxMenuSelectionRange);
             while (keepRunning)
             {
                 switch (userChoice)
@@ -68,7 +69,7 @@ namespace Ex03.ConsoleUI
                 if (keepRunning)
                 {
                     printOptions();
-                    userChoice = getUserChoice();
+                    userChoice = (eMenuSelection)getUserChoice(k_MinMenuSelectionRange, k_MaxMenuSelectionRange);
                 }
             }
         }
@@ -128,7 +129,6 @@ Please enter the license number of the vehicle:");
         {
             throw new NotImplementedException();
         }
-
         private void changeVehicleStatusInGarage()
         {
             throw new NotImplementedException();
@@ -152,28 +152,29 @@ Please enter the license number of the vehicle:");
             Vehicle currentVehicle;
             //To Do:
             m_Garage.GetVehicleInGarage(licenseNumber, out currentVehicle);
-            MethodInfo FuelMethod = currentVehicle.GetType().GetMethod("ChargeEngine");
-            if(FuelMethod != null)
+
+            MethodInfo engineFillMethod = currentVehicle.GetType().GetMethod("ChargeEngine");
+            if (engineFillMethod != null)
             {
-                while(!isValid)
+                while (!isValid)
                 {
                     try
                     {
-                        amountToCharge = getHoursToCharge();
-                        FuelMethod.Invoke(currentVehicle, new object[] { amountToCharge });
+                        Console.WriteLine("Please enter Amount of Hours to Charge");
+                        amountToCharge = getAmountOfEnergyToFill();
+                        engineFillMethod.Invoke(currentVehicle, new object[] { amountToCharge });
                         isValid = true;
                         Console.WriteLine("Vehicle successfully charged");
                     }
-                    catch(ValueOutOfRangeException ex)
+                    catch (ValueOutOfRangeException ex)
                     {
-                        Console.WriteLine(
-                            string.Format("You must enter a number between {0}-{1}", ex.MinValue, ex.MaxValue));
+                        Console.WriteLine(string.Format("You must enter a number between {0}-{1}", ex.MinValue, ex.MaxValue));
                     }
-                    catch(FormatException)
+                    catch (FormatException)
                     {
                         Console.WriteLine("Invalid input.");
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         Console.WriteLine(ex.Message);
                     }
@@ -181,28 +182,77 @@ Please enter the license number of the vehicle:");
             }
             else
             {
-                Console.WriteLine("Vehicle doesn't have electric engine,returning To main menu");
+                Console.WriteLine("Vehicle doesn't have electric engine,returning to main menu");
             }
         }
 
-        private float getHoursToCharge()
+        private float getAmountOfEnergyToFill()
         {
-            float userInput;
-            Console.WriteLine("Please enter Amount of Hours to Charge");
-            userInput = float.Parse(Console.ReadLine());
-            return userInput;
+            return float.Parse(Console.ReadLine());
         }
 
         private void refuelVehicle()
         {
-            throw new NotImplementedException();
+            float amountToCharge;
+            string licenseNumber = getLicenseFromUser();
+            bool isValid = false;
+            Vehicle currentVehicle;
+            FuelEngine.eFuelType fuelType;
+            //To Do:
+            m_Garage.GetVehicleInGarage(licenseNumber, out currentVehicle);
+
+            MethodInfo engineFillMethod = currentVehicle.GetType().GetMethod("AddFuel");
+            if (engineFillMethod != null)
+            {
+                while (!isValid)
+                {
+                    try
+                    {
+                        Console.WriteLine("Please enter Amount of Fuel to Fill");
+                        amountToCharge = getAmountOfEnergyToFill();
+                        fuelType = getFuelType();
+                        engineFillMethod.Invoke(currentVehicle, new object[] { amountToCharge, fuelType });
+                        isValid = true;
+                        Console.WriteLine("Vehicle successfully charged");
+                    }
+                    catch (ValueOutOfRangeException ex)
+                    {
+                        Console.WriteLine(string.Format("You must enter a number between {0}-{1}", ex.MinValue, ex.MaxValue));
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Invalid input.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Vehicle doesn't have fuel engine,returning to main menu");
+            }
         }
 
-        private eMenuSelection getUserChoice()
+        private FuelEngine.eFuelType getFuelType()
         {
-            Console.WriteLine("Please enter a number between 1-8");
-            Console.WriteLine(string.Format("Please enter a number between {0}-{1}",1,8));
-            string userChoice; 
+            FuelEngine.eFuelType userFuelType;
+            Array array = Enum.GetValues(typeof(FuelEngine.eFuelType));
+            Console.WriteLine("Please choose fuel type:");
+            foreach (FuelEngine.eFuelType fuelType in array)
+            {
+                Console.WriteLine(string.Format("for {0} Press {1}", fuelType.ToString(), fuelType.GetHashCode()));
+            }
+
+            userFuelType = (FuelEngine.eFuelType) getUserChoice(k_MinMenuSelectionRange, k_MaxMenuSelectionRange);
+            return userFuelType;
+        }
+
+        private int getUserChoice(int startRange, int endRange)
+        {
+            Console.WriteLine(string.Format("Please enter a number between {0}-{1}", startRange, endRange));
+            string userChoice;
             bool validInput = false;
             int input = 0;
             do
@@ -211,13 +261,13 @@ Please enter the license number of the vehicle:");
                 try
                 {
                     input = int.Parse(userChoice);
-                    if (1 <= input && input <= 8)
+                    if (startRange <= input && input <= endRange)
                     {
                         validInput = true;
                     }
                     else
                     {
-                        Console.WriteLine("number isn't between 1-8");
+                        Console.WriteLine(string.Format("This number is not between {0}-{1}", startRange, endRange));
                     }
                 }
                 catch (FormatException)
@@ -227,7 +277,7 @@ Please enter the license number of the vehicle:");
             }
             while (!validInput);
 
-            return (eMenuSelection)input;
+            return input;
         }
 
         //private void insertVehicle()

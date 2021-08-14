@@ -23,7 +23,7 @@ namespace Ex03.GarageLogic
             {
                 if (value > r_MaximumEnergyHours)
                 {
-                    throw new ValueOutOfRangeException(0, r_MaximumEnergyHours);
+                    throw new ValueOutOfRangeException(0, r_MaximumEnergyHours- m_CurrentEnergyHoursLeft);
                 }
 
                 m_CurrentEnergyHoursLeft = value;
