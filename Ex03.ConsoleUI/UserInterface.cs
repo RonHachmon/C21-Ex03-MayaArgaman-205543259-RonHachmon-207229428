@@ -1,5 +1,6 @@
-﻿using  System;
+﻿using System;
 using Ex03.GarageLogic;
+using System.Reflection;
 namespace Ex03.ConsoleUI
 {
     public class UserInterface
@@ -7,7 +8,7 @@ namespace Ex03.ConsoleUI
         public enum eMenuSelection
         {
 
-            InsertNewVehicle=1,
+            InsertNewVehicle = 1,
             LicenseList,
             ModifyStatus,
             InflateAir,
@@ -17,7 +18,7 @@ namespace Ex03.ConsoleUI
             Quit
         }
 
-        private Garage m_Garage= new Garage();
+        private Garage m_Garage = new Garage();
 
         public void Run()
         {
@@ -25,7 +26,7 @@ namespace Ex03.ConsoleUI
             eMenuSelection userChoice;
             int choice;
             printOptions();
-            userChoice = getUserChoice();
+            userChoice = (eMenuSelection)getUserChoice(1,8);
             while (keepRunning)
             {
                 switch (userChoice)
@@ -35,7 +36,7 @@ namespace Ex03.ConsoleUI
                         break;
 
                     case eMenuSelection.LicenseList:
-                        viewListOfLicenseNumbers();
+                        showListOfLicenseNumbers();
                         break;
 
                     case eMenuSelection.ModifyStatus:
@@ -67,7 +68,7 @@ namespace Ex03.ConsoleUI
                 if (keepRunning)
                 {
                     printOptions();
-                    userChoice = getUserChoice();
+                    userChoice = (eMenuSelection)getUserChoice(1, 8);
                 }
             }
         }
@@ -87,23 +88,32 @@ Please choose one of the following options :
 ");
         }
 
-        private void printConditionOptions()
+        private void printStatusOptions()
         {
             Console.WriteLine(@"
 Please choose one of the following options : 
 1. InRepair.
 2. Repaired.
-3. Paied. 
+3. Paid. 
 ");
         }
+
+        private void printOptionsofFilteringStatus()
+        {
+            Console.WriteLine(@"
+Please choose one of the following options : 
+1. All licenses
+2. select specific status   
+");
+        }
+
 
         private string getLicenseFromUser()
         {
             bool validChoice = false;
             string licenseInput = null;
 
-            Console.WriteLine(@"
-Please enter the license number of the vehicle:");
+            Console.WriteLine(@"Please enter the license number of the vehicle:");
 
             while (!validChoice)
             {
@@ -128,27 +138,25 @@ Please enter the license number of the vehicle:");
             return licenseInput;
         }
 
-        private int getNewConditionFromUser()
+        private VehicleDetails.eCarStatusInGarage getNewStatusFromUser()
         {
             bool keepRunning = true;
-            int userChoice;
-            int choice;
-            printConditionOptions();
-            userChoice = Console.ReadLine();
+            printStatusOptions();
+            VehicleDetails.eCarStatusInGarage userChoice = (VehicleDetails.eCarStatusInGarage)getUserChoice(1,3);
             while (keepRunning)
             {
                 switch ((VehicleDetails.eCarStatusInGarage)userChoice)
                 {
-                    case VehicleDetails.eCarStatusInGarage.InRepair ;
+                    case VehicleDetails.eCarStatusInGarage.InRepair:
                         keepRunning = false;
                         break;
 
-                    case eCarStatusInGarage.Repaired:
+                    case VehicleDetails.eCarStatusInGarage.Repaired:
                         keepRunning = false;
 
                         break;
 
-                    case eCarStatusInGarage.Paied:
+                    case VehicleDetails.eCarStatusInGarage.Paid:
                         keepRunning = false;
                         break;
                 }
@@ -156,27 +164,44 @@ Please enter the license number of the vehicle:");
                 if (keepRunning)
                 {
                     Console.WriteLine("Invalid Input, Please try again");
-                    printConditionOptions();
+                    printStatusOptions();
                 }
             }
 
             return userChoice;
         }
 
-
-
         private void insertVehicle()
         {
             throw new NotImplementedException();
         }
 
-        private void viewListOfLicenseNumbers()
+        private void showListOfLicenseNumbers()
         {
-            throw new NotImplementedException();
+            printOptionsofFilteringStatus();
+            int userChoice = getUserChoice(1, 2);
+            if (userChoice == 1)
+            {
+                m_Garage.GetAllLicensePlate();
+            }
+            else
+            {
+                {
+                    if (userChoice == 2)
+                    {
+                        printStatusOptions();
+                        userChoice = getUserChoice(1, 3);
+                        m_Garage.GetLicensePlateByStatus((VehicleDetails.eCarStatusInGarage)userChoice);
+                    }
+                }
+            }
         }
 
         private void changeVehicleStatusInGarage()
         {
+            string lisencePlate = getLicenseFromUser();
+            VehicleDetails.eCarStatusInGarage newStatus = getNewStatusFromUser();
+            m_Garage.ChangeCarStatus(lisencePlate, newStatus);
             throw new NotImplementedException();
         }
 
@@ -192,7 +217,50 @@ Please enter the license number of the vehicle:");
 
         private void rechargeVehicle()
         {
-            throw new NotImplementedException();
+            float amountToCharge;
+            string licenseNumber = getLicenseFromUser();
+            bool isValid = false;
+            Vehicle currentVehicle;
+            //To Do:
+            m_Garage.GetVehicleInGarage(licenseNumber, out currentVehicle);
+            MethodInfo FuelMethod = currentVehicle.GetType().GetMethod("ChargeEngine");
+            if(FuelMethod != null)
+            {
+                while (!isValid)
+                {
+                    try
+                    {
+                        amountToCharge = getHoursToCharge();
+                        FuelMethod.Invoke(currentVehicle, new object[] { amountToCharge });
+                        isValid = true;
+                        Console.WriteLine("Vehicle successfully charged");
+                    }
+                    catch (ValueOutOfRangeException ex)
+                    {
+                        Console.WriteLine("You must enter a number between {0}-{1}", ex.MinValue, ex.MaxValue);
+                    }
+                    catch (FormatException)
+                    {
+                        Console.WriteLine("Invalid input.");
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(ex.Message);
+                    }
+                }
+            }
+            else
+            {
+                Console.WriteLine("Vehicle doesn't have electric engine,returning To main menu");
+            }
+        }
+
+        private float getHoursToCharge()
+        {
+            float userInput;
+            Console.WriteLine("Please enter Amount of Hours to Charge");
+            userInput = float.Parse(Console.ReadLine());
+            return userInput;
         }
 
         private void refuelVehicle()
@@ -200,25 +268,24 @@ Please enter the license number of the vehicle:");
             throw new NotImplementedException();
         }
 
-        private eMenuSelection getUserChoice()
+        private int getUserChoice(int startRange, int endRange)
         {
-            Console.WriteLine("Please enter a number between 1-8");
-            string userChoice; 
+            Console.WriteLine("Please enter a number between {0}-{1}", startRange, endRange);
             bool validInput = false;
             int input = 0;
             do
             {
-                userChoice = Console.ReadLine();
+                string userChoice = Console.ReadLine();
                 try
                 {
                     input = int.Parse(userChoice);
-                    if (1 <= input && input <= 8)
+                    if (startRange <= input && input <= endRange)
                     {
                         validInput = true;
                     }
                     else
                     {
-                        Console.WriteLine("number isn't between 1-8");
+                        Console.WriteLine("This number is not between {0}-{1}", startRange, endRange);
                     }
                 }
                 catch (FormatException)
@@ -228,7 +295,7 @@ Please enter the license number of the vehicle:");
             }
             while (!validInput);
 
-            return (eMenuSelection)input;
+            return input;
         }
 
         //private void insertVehicle()
