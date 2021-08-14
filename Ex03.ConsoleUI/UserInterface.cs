@@ -127,7 +127,7 @@ Please enter the license number of the vehicle:");
 
             return licenseInput;
         }
-/*
+
         private int getNewConditionFromUser()
         {
             bool keepRunning = true;
@@ -162,7 +162,7 @@ Please enter the license number of the vehicle:");
 
             return userChoice;
         }
-*/
+
 
 
         private void insertVehicle()
