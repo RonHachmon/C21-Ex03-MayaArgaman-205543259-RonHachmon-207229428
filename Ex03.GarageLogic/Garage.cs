@@ -79,21 +79,24 @@ namespace Ex03.GarageLogic
             }
         }
 
-        public void CheckIfVehicleInGarage(string i_LicenseNumber)
+        public bool CheckIfVehicleInGarage(string i_LicenseNumber)
         {
-            if (!r_VehiclesInGarage.ContainsKey(i_LicenseNumber))
+            bool isInGarage = false;
+            if (r_VehiclesInGarage.ContainsKey(i_LicenseNumber))
             {
-                throw new Exception("Error-the vehicle does not exist in the garage.");
+                isInGarage = true;
             }
 
+            return isInGarage;
         }
 
-     
         public void GetVehicleInGarage(string i_LicenseNumber, out Vehicle i_CurrentVehicle)
         {
             i_CurrentVehicle = null;
-            CheckIfVehicleInGarage(i_LicenseNumber);
-            i_CurrentVehicle = r_VehiclesInGarage[i_LicenseNumber].Vehicle;
+            if (CheckIfVehicleInGarage(i_LicenseNumber))
+            {
+                i_CurrentVehicle = r_VehiclesInGarage[i_LicenseNumber].Vehicle;
+            }
         }
     }
 }
