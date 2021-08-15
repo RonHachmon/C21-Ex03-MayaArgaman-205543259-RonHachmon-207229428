@@ -91,7 +91,7 @@ Please choose one of the following options :
             Console.WriteLine(@"
 Please choose one of the following options : 
 1. All licenses
-2. select specific status   
+2. Select specific status   
 ");
         }
 
@@ -151,16 +151,11 @@ Please choose one of the following options :
             {
                 m_Garage.GetAllLicensePlate();
             }
-            else
+            else if (userChoice == 2)
             {
-                {
-                    if (userChoice == 2)
-                    {
-                        printStatusOptions();
-                        userChoice = getUserChoice(1, 3);
-                        m_Garage.GetLicensePlateByStatus((VehicleDetails.eCarStatusInGarage)userChoice);
-                    }
-                }
+                printStatusOptions();
+                userChoice = getUserChoice(1, 3);
+                m_Garage.GetLicensePlateByStatus((VehicleDetails.eCarStatusInGarage)userChoice);
             }
         }
 
@@ -294,22 +289,24 @@ Please enter the license number of the vehicle:");
         //    return methodName.Contains("Set");
         //}
 
-        private void viewListOfLicenseNumbers()
-        {
-            throw new NotImplementedException();
-        }
 
         private void changeVehicleStatusInGarage()
         {
             string lisencePlate = getLicenseFromUser();
-            VehicleDetails.eCarStatusInGarage newStatus = getNewStatusFromUser();
-            m_Garage.ChangeCarStatus(lisencePlate, newStatus);
-            throw new NotImplementedException();
+            if (m_Garage.CheckIfVehicleInGarage(lisencePlate))
+            {
+                VehicleDetails.eCarStatusInGarage newStatus = getNewStatusFromUser();
+                m_Garage.ChangeCarStatus(lisencePlate, newStatus);
+            }
         }
 
         private void inflateToMax()
         {
-            throw new NotImplementedException();
+            string lisencePlate = getLicenseFromUser();
+            if (m_Garage.CheckIfVehicleInGarage(lisencePlate))
+            {
+                m_Garage.InflateAirToMax(lisencePlate);
+            }
         }
 
         private void printVehicleDetails()
