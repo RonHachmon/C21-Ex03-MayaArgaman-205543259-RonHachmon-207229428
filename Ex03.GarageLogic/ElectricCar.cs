@@ -22,5 +22,10 @@
         {
             m_ElectricEngine.ChargeBattery(i_BatteryHours);
         }
+
+        public override string ToString()
+        {
+            return string.Format(base.ToString() + m_ElectricEngine.ToString());
+        }
     }
 }

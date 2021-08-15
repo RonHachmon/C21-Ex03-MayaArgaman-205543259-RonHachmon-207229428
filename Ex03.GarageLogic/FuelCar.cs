@@ -15,5 +15,10 @@
         {
             m_Engine.AddFuel(i_Fuel, i_FuelType);
         }
+
+        public override string ToString()
+        {
+            return string.Format(base.ToString() + m_Engine.ToString());
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Ex03.GarageLogic
+﻿using System;
+
+namespace Ex03.GarageLogic
 {
     public class Wheel
     {
@@ -48,6 +50,15 @@
         public void AddPressure(float i_PressureToAdd)
         {
             m_CurrentAirPressure += i_PressureToAdd;
+        }
+
+        public override string ToString()
+        {
+            return string.Format(
+                "Wheel manufacture: {0}{3}" +
+                "Max air pressure: {1}{3}" +
+                "Current air pressure {2}{3}",
+                m_Manufacture, r_MaxAirPressure, m_CurrentAirPressure, Environment.NewLine);
         }
     }
 }

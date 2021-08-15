@@ -1,4 +1,6 @@
-﻿namespace Ex03.GarageLogic
+﻿using System;
+
+namespace Ex03.GarageLogic
 {
     public class ElectricMotorcycle : Motorcycle
     {
@@ -13,6 +15,24 @@
         public void ChargeEngine(float i_BatteryHours)
         {
             m_ElectricEngine.ChargeBattery(i_BatteryHours);
+        }
+
+        public override string ToString()
+        {
+            return string.Format(base.ToString() + m_ElectricEngine.ToString());
+        }
+
+        public string GetInputEngineCurrentHours()
+        {
+            string inputRequest = "Please enter current hours left on engine ";
+            return inputRequest;
+        }
+
+        public void SetInputEngineCurrentHours(string i_currentEngineHoursLeft)
+        {
+            Console.WriteLine("Hello");
+            float currentEngineHoursLeft = float.Parse(i_currentEngineHoursLeft);
+            m_ElectricEngine.CurrentEnergyHours = currentEngineHoursLeft;
         }
     }
 }

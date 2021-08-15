@@ -69,5 +69,14 @@ namespace Ex03.GarageLogic
                 throw new ArgumentException("Error - You entered a wrong fuel type.");
             }
         }
+
+        public override string ToString()
+        {
+            return string.Format(
+                "Fuel type: {0}{3}" +
+                                 "Max amount of fuel: {1}{3}" +
+                                 "Current amount of fuel: {2}{3}",
+                r_FuelType, r_MaximumAmountOfFuel, m_CurrentAmountFuel, Environment.NewLine);
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿namespace Ex03.GarageLogic
+﻿using System;
+
+namespace Ex03.GarageLogic
 {
     public abstract class Motorcycle : Vehicle
     {
@@ -25,5 +27,13 @@
             string output = "please enter a number between 1-4";
         }
 
+        public override string ToString()
+        {
+            return string.Format(
+                base.ToString() +
+                "License Type: {0}{1}" +
+                                 "Engine Capacity: {2}{1}",
+                m_LicenseType, Environment.NewLine, m_EngineCapacity);
+        }
     }
 }

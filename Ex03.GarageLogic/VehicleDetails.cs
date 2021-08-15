@@ -1,4 +1,6 @@
-﻿namespace Ex03.GarageLogic
+﻿using System;
+
+namespace Ex03.GarageLogic
 {
     public class VehicleDetails
     {
@@ -73,5 +75,15 @@
                 m_NameOfOwner = value;
             }
         }
+
+        public override string ToString()
+        {
+            return string.Format(
+                "Owner name {0}{1}" +
+                "Owner Phone {2}{1}" +
+                Vehicle.ToString(),
+                m_NameOfOwner, Environment.NewLine, m_PhoneNumberOfOwner);
+        }
+
     }
 }

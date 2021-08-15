@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Ex03.GarageLogic
 {
@@ -25,12 +26,23 @@ namespace Ex03.GarageLogic
                 return r_Wheels;
             }
         }
+
         public string License
         {
             get
             {
                 return m_LicensePlate;
             }
+        }
+
+        public override string ToString()
+        {
+            return string.Format(
+                       "Vehicle model: {0}{3}" +
+                       "License plate: {1}{3}" +
+                       "Remaining energy: {2}{3}" +
+                       r_Wheels[0].ToString(),
+                       m_VehicleModel, m_LicensePlate,  m_RemainingEnergy, Environment.NewLine);
         }
 
         //public virtual List<string> BuildVehicleInputsList()

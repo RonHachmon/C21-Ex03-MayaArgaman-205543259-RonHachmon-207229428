@@ -202,15 +202,12 @@ Please enter the license number of the vehicle:");
             string name;
             VehiclesBuilder.eVehicleType vehicleType;
             Vehicle currentVehicle=null;
-            
             m_Garage.GetVehicleInGarage(lisencePlate, out currentVehicle);
             if (currentVehicle == null)
             {
                 vehicleType = getVehicleType();
                 currentVehicle = VehiclesBuilder.CreateVehicle(vehicleType, lisencePlate);
-
-
-
+                //Big chunk of code
                 Console.WriteLine("Please enter your name");
                 name = Console.ReadLine();
                 Console.WriteLine("Please enter your phone number");
@@ -222,8 +219,6 @@ Please enter the license number of the vehicle:");
             {
                 m_Garage.ChangeCarStatus(lisencePlate, VehicleDetails.eCarStatusInGarage.InRepair);
             }
-
-            throw new NotImplementedException();
         }
 
         //private void insertDetailsToNewVehicle(Vehicle i_NewVehicle)
@@ -319,7 +314,8 @@ Please enter the license number of the vehicle:");
 
         private void printVehicleDetails()
         {
-            throw new NotImplementedException();
+            string licenseNumber = getLicenseFromUser();
+            Console.WriteLine(m_Garage.ToString(licenseNumber));
         }
 
         private void rechargeVehicle()

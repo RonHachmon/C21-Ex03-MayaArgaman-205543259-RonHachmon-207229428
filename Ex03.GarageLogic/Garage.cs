@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Xml.Serialization;
 using static Ex03.GarageLogic.VehicleDetails;
-
 namespace Ex03.GarageLogic
 {
     public class Garage
@@ -25,18 +24,7 @@ namespace Ex03.GarageLogic
 
         public void AddVehicle(VehicleDetails i_CustomerDetails)
         {
-
             r_VehiclesInGarage.Add(i_CustomerDetails.Vehicle.License, i_CustomerDetails);
-            //VehicleDetails temp;
-            //if (r_VehiclesInGarage.TryGetValue(i_LicensePlate, out temp))
-            //{
-            //    temp.CarStatus = VehicleDetails.eCarStatusInGarage.InRepair;
-            //    throw new ArgumentException("License already Exist");
-            //}
-            //else
-            //{
-            //    r_VehiclesInGarage.Add(i_LicensePlate, temp);
-            //}
         }
 
         public List<string> GetAllLicensePlate()
@@ -79,21 +67,29 @@ namespace Ex03.GarageLogic
             }
         }
 
-        public void CheckIfVehicleInGarage(string i_LicenseNumber)
+        public bool CheckIfVehicleInGarage(string i_LicenseNumber)
         {
-            if (!r_VehiclesInGarage.ContainsKey(i_LicenseNumber))
+            bool isInGarage = false;
+            if (r_VehiclesInGarage.ContainsKey(i_LicenseNumber))
             {
-                throw new Exception("Error-the vehicle does not exist in the garage.");
+                isInGarage = true;
             }
 
+            return isInGarage;
         }
 
-     
         public void GetVehicleInGarage(string i_LicenseNumber, out Vehicle i_CurrentVehicle)
         {
             i_CurrentVehicle = null;
-            CheckIfVehicleInGarage(i_LicenseNumber);
-            i_CurrentVehicle = r_VehiclesInGarage[i_LicenseNumber].Vehicle;
+            if (CheckIfVehicleInGarage(i_LicenseNumber))
+            {
+                i_CurrentVehicle = r_VehiclesInGarage[i_LicenseNumber].Vehicle;
+            }
+        }
+
+        public string ToString(string i_LicensePlate)
+        {
+           return this.r_VehiclesInGarage[i_LicensePlate].ToString();
         }
     }
 }

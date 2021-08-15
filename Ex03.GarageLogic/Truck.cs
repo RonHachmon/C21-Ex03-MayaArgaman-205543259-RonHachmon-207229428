@@ -1,4 +1,6 @@
-﻿namespace Ex03.GarageLogic
+﻿using System;
+
+namespace Ex03.GarageLogic
 {
     public class Truck : Vehicle
     {
@@ -19,6 +21,15 @@
         public void AddFuel(float i_Fuel, FuelEngine.eFuelType i_FuelType)
         {
             m_FuelEngine.AddFuel(i_Fuel, i_FuelType);
+        }
+
+        public override string ToString()
+        {
+            return string.Format(
+                base.ToString() + "Contains Hazardous items: {0}{2}" +
+                                                 "Cargo capacity: {1}{2}" +
+                                                 m_FuelEngine.ToString(),
+                m_TransportHazardousMaterials, m_CargoCapacity, Environment.NewLine);
         }
     }
 }

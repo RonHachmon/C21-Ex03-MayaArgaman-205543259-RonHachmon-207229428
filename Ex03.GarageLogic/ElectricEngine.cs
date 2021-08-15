@@ -21,7 +21,7 @@ namespace Ex03.GarageLogic
 
             set
             {
-                if (value > r_MaximumEnergyHours)
+                if (value > r_MaximumEnergyHours || value < 0)
                 {
                     throw new ValueOutOfRangeException(0, r_MaximumEnergyHours - m_CurrentEnergyHoursLeft);
                 }
@@ -33,6 +33,11 @@ namespace Ex03.GarageLogic
         public void ChargeBattery(float i_BatteryCharge)
         {
             this.CurrentEnergyHours += i_BatteryCharge;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("Engine Max hours {0}{2}" + "Current hours left {1}", r_MaximumEnergyHours, m_CurrentEnergyHoursLeft, Environment.NewLine);
         }
     }
 }
