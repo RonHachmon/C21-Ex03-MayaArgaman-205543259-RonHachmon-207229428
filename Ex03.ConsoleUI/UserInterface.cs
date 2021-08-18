@@ -172,8 +172,6 @@ Please enter the license number of the vehicle:");
                 try
                 {
                     licenseInput = Console.ReadLine();
-                    //Vehicle.CheckLicenseLength(licenseInput);
-                    //Vehicle.CheckLicenseLetters(licenseInput);
                     validChoice = true;
                 }
                 catch (ValueOutOfRangeException ex)
@@ -202,16 +200,33 @@ Please enter the license number of the vehicle:");
                 vehicleType = getVehicleType();
                 currentVehicle = VehiclesBuilder.CreateVehicle(vehicleType, lisencePlate);
                 insertDetailsToNewVehicle(currentVehicle);
-                Console.WriteLine("Please enter your name");
-                name = Console.ReadLine();
-                Console.WriteLine("Please enter your phone number");
-                customerPhoneNumber = Console.ReadLine();
-                VehicleDetails customVehicleDetails = new VehicleDetails(currentVehicle, name, customerPhoneNumber);
+                VehicleDetails customVehicleDetails = new VehicleDetails(currentVehicle);
+                UpdateDetails(customVehicleDetails);
                 r_Garage.AddVehicle(customVehicleDetails);
             }
             else
             {
                 r_Garage.ChangeCarStatus(lisencePlate, VehicleDetails.eCarStatusInGarage.InRepair);
+            }
+        }
+
+        private void UpdateDetails(VehicleDetails i_VehicleDetails)
+        {
+            bool validInput = false;
+            while (!validInput)
+            {
+                try
+                {
+                    Console.WriteLine("Please enter your name");
+                    i_VehicleDetails.NameOfOwner = Console.ReadLine();
+                    Console.WriteLine("Please enter your phone number");
+                    i_VehicleDetails.PhoneNumberOfOwner = Console.ReadLine();
+                    validInput = true;
+                }
+                catch (FormatException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
         }
 

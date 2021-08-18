@@ -27,10 +27,13 @@ namespace Ex03.GarageLogic
         public override string ToString()
         {
             return string.Format(
-                base.ToString() + "Contains Hazardous items: {0}{2}" +
-                                                 "Cargo capacity: {1}{2}" +
-                                                 m_FuelEngine.ToString(),
-                m_TransportHazardousMaterials, m_CargoCapacity, Environment.NewLine);
+                base.ToString() +
+                "Contains Hazardous items: {0}{2}" +
+                "Cargo capacity: {1}{2}" +
+                m_FuelEngine.ToString(),
+                m_TransportHazardousMaterials,
+                m_CargoCapacity,
+                Environment.NewLine);
         }
 
         public override List<string> BuildVehicleInputsList()

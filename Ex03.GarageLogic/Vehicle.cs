@@ -67,8 +67,11 @@ namespace Ex03.GarageLogic
                        "Vehicle model: {0}{3}" +
                        "License plate: {1}{3}" +
                        "Remaining energy: {2}{3}" +
-                       r_Wheels[0].ToString(),
-                       m_VehicleModel, m_LicensePlate,  m_RemainingEnergy, Environment.NewLine);
+                       r_Wheels[0],
+                       m_VehicleModel,
+                       m_LicensePlate,
+                       (float)Math.Round(m_RemainingEnergy, 2),
+                       Environment.NewLine);
         }
 
         public void SetModelName(string i_ModelName)
@@ -84,7 +87,6 @@ namespace Ex03.GarageLogic
             this.ModelName = i_ModelName;
         }
 
-        //***
         public void SetListOfWheels(string i_ManufacturerName, string i_CurrentAirPressure)
         {
             foreach (char ch in i_ManufacturerName)
@@ -113,7 +115,6 @@ namespace Ex03.GarageLogic
             }
         }
 
-        //***
         public virtual List<string> BuildVehicleInputsList()
         {
             List<string> vehicleInputsList = new List<string>();

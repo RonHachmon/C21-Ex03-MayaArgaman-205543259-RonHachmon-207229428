@@ -87,9 +87,9 @@ namespace Ex03.GarageLogic
 r_FuelType, r_MaximumAmountOfFuel, m_CurrentAmountFuel, Environment.NewLine);
         }
 
-        public static void UpdateVehicleInputsList(List<string> vehicleInputsList)
+        public static void UpdateVehicleInputsList(List<string> i_VehicleInputsList)
         {
-            vehicleInputsList.Add("the current amount of fuel:");
+            i_VehicleInputsList.Add("the current amount of fuel:");
         }
 
         public void UpdateEngine(string i_RemainingAmountOfFuel)

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Linq;
 
 namespace Ex03.GarageLogic
 {
@@ -21,6 +23,12 @@ namespace Ex03.GarageLogic
             Vehicle = i_OwnerVehicle;
             NameOfOwner = i_NameOfOwner;
             PhoneNumberOfOwner = i_PhoneNumberOfOwner;
+            m_CarStatus = eCarStatusInGarage.InRepair;
+        }
+
+        public VehicleDetails(Vehicle i_OwnerVehicle)
+        {
+            Vehicle = i_OwnerVehicle;
             m_CarStatus = eCarStatusInGarage.InRepair;
         }
 
@@ -59,7 +67,14 @@ namespace Ex03.GarageLogic
 
             set
             {
-                m_PhoneNumberOfOwner = value;
+                if (value.All(char.IsDigit))
+                {
+                    m_PhoneNumberOfOwner = value;
+                }
+                else
+                {
+                    throw new FormatException("phone must include only number");
+                }
             }
         }
 
@@ -72,7 +87,14 @@ namespace Ex03.GarageLogic
 
             set
             {
-                m_NameOfOwner = value;
+                if (value.All(char.IsLetter))
+                {
+                    m_NameOfOwner = value;
+                }
+                else
+                {
+                    throw new FormatException("name must include only letters");
+                }
             }
         }
 
@@ -81,8 +103,9 @@ namespace Ex03.GarageLogic
             return string.Format(
                 "Owner name: {0}{1}" +
                 "Owner Phone: {2}{1}" +
-                Vehicle.ToString(),
-                m_NameOfOwner, Environment.NewLine, m_PhoneNumberOfOwner);
+                Vehicle, m_NameOfOwner,
+                Environment.NewLine,
+                m_PhoneNumberOfOwner);
         }
     }
 }

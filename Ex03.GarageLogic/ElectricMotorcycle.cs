@@ -24,19 +24,6 @@ namespace Ex03.GarageLogic
             return string.Format(base.ToString() + m_ElectricEngine.ToString());
         }
 
-        //public string GetInputEngineCurrentHours()
-        //{
-        //    string inputRequest = "Please enter current hours left on engine ";
-        //    return inputRequest;
-        //}
-
-        //public void SetInputEngineCurrentHours(string i_currentEngineHoursLeft)
-        //{
-        //    float currentEngineHoursLeft = float.Parse(i_currentEngineHoursLeft);
-        //    m_ElectricEngine.CurrentEnergyHours = currentEngineHoursLeft;
-        //    this.m_RemainingEnergy = (m_ElectricEngine.CurrentEnergyHours / m_ElectricEngine.MaxEnergyHours) * 100;
-        //}
-
         public override List<string> BuildVehicleInputsList()
         {
             List<string> vehicleInputsList = base.BuildVehicleInputsList();

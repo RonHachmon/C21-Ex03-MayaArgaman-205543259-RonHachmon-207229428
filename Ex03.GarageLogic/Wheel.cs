@@ -65,7 +65,10 @@ namespace Ex03.GarageLogic
                 "Wheel manufacture: {0}{3}" +
                 "Max air pressure: {1}{3}" +
                 "Current air pressure: {2}{3}",
-                m_Manufacture, r_MaxAirPressure, m_CurrentAirPressure, Environment.NewLine);
+                m_Manufacture,
+                r_MaxAirPressure,
+                m_CurrentAirPressure,
+                Environment.NewLine);
         }
     }
 }
