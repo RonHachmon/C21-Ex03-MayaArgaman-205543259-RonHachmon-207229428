@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Ex03.GarageLogic
 {
@@ -13,7 +14,6 @@ namespace Ex03.GarageLogic
         }
 
         private const int k_MinFuelRange = 1;
-        private const int k_MaxFuelRange = 4;
         private readonly eFuelType r_FuelType;
         private readonly float r_MaximumAmountOfFuel;
         private float m_CurrentAmountFuel;
@@ -22,6 +22,14 @@ namespace Ex03.GarageLogic
         {
             r_FuelType = i_FuelType;
             r_MaximumAmountOfFuel = i_MaximumAmountOfFuel;
+        }
+
+        public float MaxAmountOfFuel
+        {
+            get
+            {
+                return r_MaximumAmountOfFuel;
+            }
         }
 
         public int MinFuelRange
@@ -36,7 +44,7 @@ namespace Ex03.GarageLogic
         {
             get
             {
-                return k_MaxFuelRange;
+                return Enum.GetNames(typeof(eFuelType)).Length;
             }
         }
 
@@ -51,7 +59,7 @@ namespace Ex03.GarageLogic
             {
                 if (value > r_MaximumAmountOfFuel)
                 {
-                    throw new ValueOutOfRangeException(0, r_MaximumAmountOfFuel- m_CurrentAmountFuel);
+                    throw new ValueOutOfRangeException(0, r_MaximumAmountOfFuel - m_CurrentAmountFuel);
                 }
 
                 m_CurrentAmountFuel = value;
@@ -73,10 +81,27 @@ namespace Ex03.GarageLogic
         public override string ToString()
         {
             return string.Format(
-                "Fuel type: {0}{3}" +
-                                 "Max amount of fuel: {1}{3}" +
-                                 "Current amount of fuel: {2}{3}",
-                r_FuelType, r_MaximumAmountOfFuel, m_CurrentAmountFuel, Environment.NewLine);
+"Fuel type: {0}{3}" +
+"Max amount of fuel: {1}{3}" +
+"Current amount of fuel: {2}{3}",
+r_FuelType, r_MaximumAmountOfFuel, m_CurrentAmountFuel, Environment.NewLine);
+        }
+
+        public static void UpdateVehicleInputsList(List<string> vehicleInputsList)
+        {
+            vehicleInputsList.Add("the current amount of fuel:");
+        }
+
+        public void UpdateEngine(string i_RemainingAmountOfFuel)
+        {
+            float remainingAmountOfFuel;
+
+            if (float.TryParse(i_RemainingAmountOfFuel, out remainingAmountOfFuel) == false)
+            {
+                throw new FormatException("You must enter a number to the current amount of fuel.");
+            }
+
+            this.CurrentAmountFuel = remainingAmountOfFuel;
         }
     }
 }

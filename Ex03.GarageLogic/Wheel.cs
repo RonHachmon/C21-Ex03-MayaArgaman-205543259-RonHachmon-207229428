@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace Ex03.GarageLogic
 {
@@ -11,6 +12,12 @@ namespace Ex03.GarageLogic
         public Wheel(float i_MaxAirPressure)
         {
             r_MaxAirPressure = i_MaxAirPressure;
+        }
+
+        public static void UpdateVehicleInputsList(List<string> i_VehicleInputsList)
+        {
+            i_VehicleInputsList.Add("the current air pressure in wheels:");
+            i_VehicleInputsList.Add("the manufacturer name of the wheels:");
         }
 
         public float MaxAirPressure
@@ -57,7 +64,7 @@ namespace Ex03.GarageLogic
             return string.Format(
                 "Wheel manufacture: {0}{3}" +
                 "Max air pressure: {1}{3}" +
-                "Current air pressure {2}{3}",
+                "Current air pressure: {2}{3}",
                 m_Manufacture, r_MaxAirPressure, m_CurrentAirPressure, Environment.NewLine);
         }
     }

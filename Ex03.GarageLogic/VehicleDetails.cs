@@ -79,11 +79,10 @@ namespace Ex03.GarageLogic
         public override string ToString()
         {
             return string.Format(
-                "Owner name {0}{1}" +
-                "Owner Phone {2}{1}" +
+                "Owner name: {0}{1}" +
+                "Owner Phone: {2}{1}" +
                 Vehicle.ToString(),
                 m_NameOfOwner, Environment.NewLine, m_PhoneNumberOfOwner);
         }
-
     }
 }

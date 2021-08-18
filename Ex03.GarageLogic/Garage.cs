@@ -1,24 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Xml.Serialization;
 using static Ex03.GarageLogic.VehicleDetails;
 namespace Ex03.GarageLogic
 {
     public class Garage
     {
-        //public enum eCarDetails
-        //{
-        //    NameOfOwner, PhoneNumberOfOwner, CarStatusInGarage
-        //}
-
-        // public enum eCarStatusInGarage
-        //{
-        //  InRepair = 1, Repaired, Paid
-        //}
-
-        private string m_NameOfOwner;
-        private string m_PhoneNumberOfOwner;
-
         private readonly Dictionary<string, VehicleDetails> r_VehiclesInGarage =
             new Dictionary<string, VehicleDetails>();
 
@@ -38,12 +24,12 @@ namespace Ex03.GarageLogic
             return allLicensePlateList;
         }
 
-        public List<string> GetLicensePlateByStatus(eCarStatusInGarage status)
+        public List<string> GetLicensePlateByStatus(eCarStatusInGarage i_Status)
         {
             List<string> licensePlateList = new List<string>();
             foreach (string licensePlate in r_VehiclesInGarage.Keys)
             {
-                if (r_VehiclesInGarage[licensePlate].CarStatus == status)
+                if (r_VehiclesInGarage[licensePlate].CarStatus == i_Status)
                 {
                     licensePlateList.Add(licensePlate);
                 }
@@ -52,15 +38,15 @@ namespace Ex03.GarageLogic
             return licensePlateList;
         }
 
-        public void ChangeCarStatus(string licensePlate, eCarStatusInGarage status)
+        public void ChangeCarStatus(string i_LicensePlate, eCarStatusInGarage i_Status)
         {
-            r_VehiclesInGarage[licensePlate].CarStatus = status;
+            r_VehiclesInGarage[i_LicensePlate].CarStatus = i_Status;
         }
 
-        public void InflateAirToMax(string licensePlate)
+        public void InflateAirToMax(string i_LicensePlate)
         {
-            List<Wheel> wheels = r_VehiclesInGarage[licensePlate].Vehicle.Wheels;
-            float maxPressure = r_VehiclesInGarage[licensePlate].Vehicle.Wheels[0].MaxAirPressure;
+            List<Wheel> wheels = r_VehiclesInGarage[i_LicensePlate].Vehicle.Wheels;
+            float maxPressure = r_VehiclesInGarage[i_LicensePlate].Vehicle.Wheels[0].MaxAirPressure;
             foreach (Wheel wheel in wheels)
             {
                 wheel.CurrentAirPressure = maxPressure;
@@ -69,13 +55,7 @@ namespace Ex03.GarageLogic
 
         public bool CheckIfVehicleInGarage(string i_LicenseNumber)
         {
-            bool isInGarage = false;
-            if (r_VehiclesInGarage.ContainsKey(i_LicenseNumber))
-            {
-                isInGarage = true;
-            }
-
-            return isInGarage;
+            return r_VehiclesInGarage.ContainsKey(i_LicenseNumber);
         }
 
         public void GetVehicleInGarage(string i_LicenseNumber, out Vehicle i_CurrentVehicle)

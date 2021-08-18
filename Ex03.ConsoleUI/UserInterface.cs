@@ -1,14 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
-using Ex03.GarageLogic;
 using System.Reflection;
+using Ex03.GarageLogic;
+
 namespace Ex03.ConsoleUI
 {
     public class UserInterface
     {
+        private const int k_MinMenuSelectionRange = 1;
+        private const int k_MaxMenuSelectionRange = 8;
+        private readonly Garage r_Garage = new Garage();
+
         public enum eMenuSelection
         {
-
             InsertNewVehicle = 1,
             LicenseList,
             ModifyStatus,
@@ -18,10 +22,6 @@ namespace Ex03.ConsoleUI
             ViewAllInfo,
             Quit
         }
-
-        private const int k_MinMenuSelectionRange = 1;
-        private const int k_MaxMenuSelectionRange = 8;
-        private Garage m_Garage = new Garage();
 
         public void Run()
         {
@@ -117,7 +117,7 @@ Please choose one of the following options :
             VehicleDetails.eCarStatusInGarage userChoice = (VehicleDetails.eCarStatusInGarage)getUserChoice(1, 3);
             while (keepRunning)
             {
-                switch ((VehicleDetails.eCarStatusInGarage)userChoice)
+                switch (userChoice)
                 {
                     case VehicleDetails.eCarStatusInGarage.InRepair:
                         keepRunning = false;
@@ -149,13 +149,13 @@ Please choose one of the following options :
             int userChoice = getUserChoice(1, 2);
             if (userChoice == 1)
             {
-                m_Garage.GetAllLicensePlate();
+                r_Garage.GetAllLicensePlate();
             }
             else if (userChoice == 2)
             {
                 printStatusOptions();
                 userChoice = getUserChoice(1, 3);
-                m_Garage.GetLicensePlateByStatus((VehicleDetails.eCarStatusInGarage)userChoice);
+                r_Garage.GetLicensePlateByStatus((VehicleDetails.eCarStatusInGarage)userChoice);
             }
         }
 
@@ -174,7 +174,6 @@ Please enter the license number of the vehicle:");
                     licenseInput = Console.ReadLine();
                     //Vehicle.CheckLicenseLength(licenseInput);
                     //Vehicle.CheckLicenseLetters(licenseInput);
-
                     validChoice = true;
                 }
                 catch (ValueOutOfRangeException ex)
@@ -196,123 +195,121 @@ Please enter the license number of the vehicle:");
             string customerPhoneNumber;
             string name;
             VehiclesBuilder.eVehicleType vehicleType;
-            Vehicle currentVehicle=null;
-            m_Garage.GetVehicleInGarage(lisencePlate, out currentVehicle);
+            Vehicle currentVehicle = null;
+            r_Garage.GetVehicleInGarage(lisencePlate, out currentVehicle);
             if (currentVehicle == null)
             {
                 vehicleType = getVehicleType();
                 currentVehicle = VehiclesBuilder.CreateVehicle(vehicleType, lisencePlate);
-                //Big chunk of code
+                insertDetailsToNewVehicle(currentVehicle);
                 Console.WriteLine("Please enter your name");
                 name = Console.ReadLine();
                 Console.WriteLine("Please enter your phone number");
                 customerPhoneNumber = Console.ReadLine();
                 VehicleDetails customVehicleDetails = new VehicleDetails(currentVehicle, name, customerPhoneNumber);
-                m_Garage.AddVehicle(customVehicleDetails);
+                r_Garage.AddVehicle(customVehicleDetails);
             }
             else
             {
-                m_Garage.ChangeCarStatus(lisencePlate, VehicleDetails.eCarStatusInGarage.InRepair);
+                r_Garage.ChangeCarStatus(lisencePlate, VehicleDetails.eCarStatusInGarage.InRepair);
             }
         }
 
-        //private void insertDetailsToNewVehicle(Vehicle i_NewVehicle)
-        //{
-        //    List<string> vehicleInputsList = i_NewVehicle.BuildVehicleInputsList();
-        //    Type typeOfObject = i_NewVehicle.GetType();
-        //    MethodInfo[] allMethodsOfObj = typeOfObject.GetMethods();
-        //    Array.Reverse(allMethodsOfObj);
-        //    int i = 0;
+        private void insertDetailsToNewVehicle(Vehicle i_NewVehicle)
+        {
+            List<string> vehicleInputsList = i_NewVehicle.BuildVehicleInputsList();
+            Type typeOfObject = i_NewVehicle.GetType();
+            MethodInfo[] allMethodsOfObj = typeOfObject.GetMethods();
+            Array.Reverse(allMethodsOfObj);
+            int i = 0;
+            foreach (MethodInfo method in allMethodsOfObj)
+            {
+                if (isSetMethod(method))
+                {
+                    bool isValidInputToMethod = false;
+                    ParameterInfo[] allParams = method.GetParameters();
 
-        //    foreach (MethodInfo method in allMethodsOfObj)
-        //    {
-        //        if (isSetMethod(method))
-        //        {
-        //            bool isValidInputToMethod = false;
-        //            ParameterInfo[] allParams = method.GetParameters();
+                    while (!isValidInputToMethod)
+                    {
+                        isValidInputToMethod = useSetMethod(i_NewVehicle, method, vehicleInputsList, allParams, ref i);
+                    }
+                }
+            }
+        }
 
-        //            while (!isValidInputToMethod)
-        //            {
-        //                isValidInputToMethod = useSetMethod(i_NewVehicle, method, vehicleInputsList, allParams, ref i);
-        //            }
-        //        }
-        //    }
-        //}
+        private bool useSetMethod(Vehicle i_NewVehicle, MethodInfo i_Method, List<string> i_VechileInputsList, ParameterInfo[] i_AllParams, ref int io_Index)
+        {
+            bool isValidInput = false;
+            int j = io_Index;
 
-        //private bool useSetMethod(Vehicle i_NewVehicle, MethodInfo i_Method, List<string> i_VechileInputsList, ParameterInfo[] i_AllParams, ref int io_Index)
-        //{
-        //    bool isValidInput = false;
-        //    int j = io_Index;
+            try
+            {
+                List<object> setMethodInputsList = new List<object>();
 
-        //    try
-        //    {
-        //        List<object> setMethodInputsList = new List<object>();
+                foreach (ParameterInfo param in i_AllParams)
+                {
+                    Console.WriteLine("Please enter {0}", i_VechileInputsList[io_Index]);
+                    setMethodInputsList.Add(Console.ReadLine());
+                    io_Index++;
+                }
 
-        //        foreach (ParameterInfo param in i_AllParams)
-        //        {
-        //            Console.WriteLine("Please enter {0}", i_VechileInputsList[io_Index]);
-        //            setMethodInputsList.Add(Console.ReadLine());
-        //            io_Index++;
-        //        }
+                i_Method.Invoke(i_NewVehicle, setMethodInputsList.ToArray());
+                isValidInput = true;
+            }
+            catch (TargetInvocationException ex)
+            {
+                if (ex.InnerException is ValueOutOfRangeException)
+                {
+                    ValueOutOfRangeException innerException = ex.InnerException as ValueOutOfRangeException;
+                    Console.WriteLine("You must enter a number between {0}-{1}{2}", innerException.MinValue, innerException.MaxValue, Environment.NewLine);
+                }
+                else if (ex.InnerException is FormatException)
+                {
+                    FormatException innerException = ex.InnerException as FormatException;
+                    Console.WriteLine("{0}{1}", innerException.Message, Environment.NewLine);
+                }
+                else if (ex.InnerException is ArgumentException)
+                {
+                    ArgumentException innerException = ex.InnerException as ArgumentException;
+                    Console.WriteLine("{0}{1}", innerException.Message, Environment.NewLine);
+                }
 
-        //        i_Method.Invoke(i_NewVehicle, setMethodInputsList.ToArray());
-        //        isValidInput = true;
-        //    }
-        //    catch (TargetInvocationException ex)
-        //    {
-        //        if (ex.InnerException is ValueOutOfRangeException)
-        //        {
-        //            ValueOutOfRangeException innerException = ex.InnerException as ValueOutOfRangeException;
-        //            Console.WriteLine(string.Format("You must enter a number between {0}-{1}{2}", innerException.MinValue, innerException.MaxValue, Environment.NewLine));
-        //        }
-        //        else if (ex.InnerException is FormatException)
-        //        {
-        //            FormatException innerException = ex.InnerException as FormatException;
-        //            Console.WriteLine("{0}{1}", innerException.Message, Environment.NewLine);
-        //        }
-        //        else if (ex.InnerException is ArgumentException)
-        //        {
-        //            ArgumentException innerException = ex.InnerException as ArgumentException;
-        //            Console.WriteLine("{0}{1}", innerException.Message, Environment.NewLine);
-        //        }
+                io_Index = j;
+            }
 
-        //        io_Index = j;
-        //    }
+            return isValidInput;
+        }
 
-        //    return isValidInput;
-        //}
+        private bool isSetMethod(MethodInfo i_Method)
+        {
+            string methodName = i_Method.Name;
 
-        //private bool isSetMethod(MethodInfo i_Method)
-        //{
-        //    string methodName = i_Method.Name;
-
-        //    return methodName.Contains("Set");
-        //}
-
+            return methodName.Contains("Set");
+        }
 
         private void changeVehicleStatusInGarage()
         {
             string lisencePlate = getLicenseFromUser();
-            if (m_Garage.CheckIfVehicleInGarage(lisencePlate))
+            if (r_Garage.CheckIfVehicleInGarage(lisencePlate))
             {
                 VehicleDetails.eCarStatusInGarage newStatus = getNewStatusFromUser();
-                m_Garage.ChangeCarStatus(lisencePlate, newStatus);
+                r_Garage.ChangeCarStatus(lisencePlate, newStatus);
             }
         }
 
         private void inflateToMax()
         {
             string lisencePlate = getLicenseFromUser();
-            if (m_Garage.CheckIfVehicleInGarage(lisencePlate))
+            if (r_Garage.CheckIfVehicleInGarage(lisencePlate))
             {
-                m_Garage.InflateAirToMax(lisencePlate);
+                r_Garage.InflateAirToMax(lisencePlate);
             }
         }
 
         private void printVehicleDetails()
         {
             string licenseNumber = getLicenseFromUser();
-            Console.WriteLine(m_Garage.ToString(licenseNumber));
+            Console.WriteLine(r_Garage.ToString(licenseNumber));
         }
 
         private void rechargeVehicle()
@@ -321,9 +318,7 @@ Please enter the license number of the vehicle:");
             string licenseNumber = getLicenseFromUser();
             bool isValid = false;
             Vehicle currentVehicle;
-            //To Do:
-            m_Garage.GetVehicleInGarage(licenseNumber, out currentVehicle);
-
+            r_Garage.GetVehicleInGarage(licenseNumber, out currentVehicle);
             MethodInfo engineFillMethod = currentVehicle.GetType().GetMethod("ChargeEngine");
             if (engineFillMethod != null)
             {
@@ -337,9 +332,18 @@ Please enter the license number of the vehicle:");
                         isValid = true;
                         Console.WriteLine("Vehicle successfully charged");
                     }
-                    catch (ValueOutOfRangeException ex)
+                    catch (TargetInvocationException ex)
                     {
-                        Console.WriteLine(string.Format("You must enter a number between {0}-{1}", ex.MinValue, ex.MaxValue));
+                        if (ex.InnerException is ValueOutOfRangeException)
+                        {
+                            ValueOutOfRangeException innerException = ex.InnerException as ValueOutOfRangeException;
+                            Console.WriteLine("You must enter a number between {0}-{1}{2}", innerException.MinValue, innerException.MaxValue, Environment.NewLine);
+                        }
+                        else if (ex.InnerException is ArgumentException)
+                        {
+                            ArgumentException innerException = ex.InnerException as ArgumentException;
+                            Console.WriteLine("{0}{1}", innerException.Message, Environment.NewLine);
+                        }
                     }
                     catch (FormatException)
                     {
@@ -369,9 +373,7 @@ Please enter the license number of the vehicle:");
             bool isValid = false;
             Vehicle currentVehicle;
             FuelEngine.eFuelType fuelType;
-            //To Do:
-            m_Garage.GetVehicleInGarage(licenseNumber, out currentVehicle);
-
+            r_Garage.GetVehicleInGarage(licenseNumber, out currentVehicle);
             MethodInfo engineFillMethod = currentVehicle.GetType().GetMethod("AddFuel");
             if (engineFillMethod != null)
             {
@@ -386,9 +388,18 @@ Please enter the license number of the vehicle:");
                         isValid = true;
                         Console.WriteLine("Vehicle successfully charged");
                     }
-                    catch (ValueOutOfRangeException ex)
+                    catch (TargetInvocationException ex)
                     {
-                        Console.WriteLine(string.Format("You must enter a number between {0}-{1}", ex.MinValue, ex.MaxValue));
+                        if (ex.InnerException is ValueOutOfRangeException)
+                        {
+                            ValueOutOfRangeException innerException = ex.InnerException as ValueOutOfRangeException;
+                            Console.WriteLine("You must enter a number between {0}-{1}{2}", innerException.MinValue, innerException.MaxValue, Environment.NewLine);
+                        }
+                        else if (ex.InnerException is ArgumentException)
+                        {
+                            ArgumentException innerException = ex.InnerException as ArgumentException;
+                            Console.WriteLine("{0}{1}", innerException.Message, Environment.NewLine);
+                        }
                     }
                     catch (FormatException)
                     {
@@ -410,10 +421,10 @@ Please enter the license number of the vehicle:");
         {
             VehiclesBuilder.eVehicleType userVehicleType;
             Array array = Enum.GetValues(typeof(VehiclesBuilder.eVehicleType));
-            //Console.WriteLine("Please choose vehicle type:");
-            foreach (VehiclesBuilder.eVehicleType VehicleType in array)
+            Console.WriteLine("Please choose vehicle type:");
+            foreach (VehiclesBuilder.eVehicleType vehicleType in array)
             {
-                Console.WriteLine("for {0} Press {1}", VehicleType.ToString(), VehicleType.GetHashCode());
+                Console.WriteLine("for {0} Press {1}", vehicleType.ToString(), vehicleType.GetHashCode());
             }
 
             userVehicleType = (VehiclesBuilder.eVehicleType)getUserChoice(VehiclesBuilder.MinAmountOfVehicle, VehiclesBuilder.MaxAmountOfVehicle);
@@ -425,19 +436,19 @@ Please enter the license number of the vehicle:");
         {
             FuelEngine.eFuelType userFuelType;
             Array array = Enum.GetValues(typeof(FuelEngine.eFuelType));
-            Console.WriteLine("Please choose vehicle type:");
+            Console.WriteLine("Please choose fuel type:");
             foreach (FuelEngine.eFuelType fuelType in array)
             {
                 Console.WriteLine("for {0} Press {1}", fuelType.ToString(), fuelType.GetHashCode());
             }
 
-            userFuelType = (FuelEngine.eFuelType) getUserChoice(k_MinMenuSelectionRange, k_MaxMenuSelectionRange);
+            userFuelType = (FuelEngine.eFuelType)getUserChoice(k_MinMenuSelectionRange, k_MaxMenuSelectionRange);
             return userFuelType;
         }
 
-        private int getUserChoice(int startRange, int endRange)
+        private int getUserChoice(int i_StartRange, int i_EndRange)
         {
-            Console.WriteLine(string.Format("Please enter a number between {0}-{1}", startRange, endRange));
+            Console.WriteLine("Please enter a number between {0}-{1}", i_StartRange, i_EndRange);
             string userChoice;
             bool validInput = false;
             int input = 0;
@@ -447,13 +458,13 @@ Please enter the license number of the vehicle:");
                 try
                 {
                     input = int.Parse(userChoice);
-                    if (startRange <= input && input <= endRange)
+                    if (i_StartRange <= input && input <= i_EndRange)
                     {
                         validInput = true;
                     }
                     else
                     {
-                        Console.WriteLine(string.Format("This number is not between {0}-{1}", startRange, endRange));
+                        Console.WriteLine("This number is not between {0}-{1}", i_StartRange, i_EndRange);
                     }
                 }
                 catch (FormatException)
@@ -465,39 +476,5 @@ Please enter the license number of the vehicle:");
 
             return input;
         }
-
-        //private void insertVehicle()
-        //{
-        //    string licensePlate;
-        //    try
-        //    {
-        //        m_Garage.AddVehicle(licensePlate);
-        //    }
-        //    catch(Exception e)
-        //    {
-        //        Console.WriteLine(e);
-        //        throw;
-        //    }
-
-        //}
-        //private void insertVehicle()
-        //{
-        //    VehiclesCreator.eVehicleType vehicleType = getTypeFromUser();
-        //    string licenseNumber = getLicenseFromUser();
-        //    Vehicle newVehicle;
-
-        //    if (m_Garage.IsVehicleExistInGarage(licenseNumber, out newVehicle))
-        //    {
-        //        Console.WriteLine("This vehicle is already exist in the garage.");
-        //        m_Garage[newVehicle, Garage.eCarDetails.CarStatusInGarage] = Garage.eCarStatusInGarage.InRepair;
-        //    }
-        //    else
-        //    {
-        //        newVehicle = VehiclesCreator.CreateVehicle(vehicleType, licenseNumber);
-        //        insertDetailsToNewVehicle(newVehicle);
-        //        insertVehicleToGarage(newVehicle);
-        //        Console.WriteLine("The vehicle was successfully put into the garage.");
-        //    }
-        //}
     }
 }

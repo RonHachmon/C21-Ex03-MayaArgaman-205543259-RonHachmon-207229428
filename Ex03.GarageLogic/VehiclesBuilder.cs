@@ -10,6 +10,7 @@
             ElectricMotorcycle,
             Truck
         }
+
         private const int k_MinAmountOfVehicle = 1;
         private const int k_MaxAmountOfVehicle = 5;
 

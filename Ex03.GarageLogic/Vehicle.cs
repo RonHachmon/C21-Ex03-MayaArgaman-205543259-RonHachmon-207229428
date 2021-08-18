@@ -13,7 +13,7 @@ namespace Ex03.GarageLogic
         public Vehicle(string i_License, int i_AmountOfWheels, float i_MaxAirPressure)
         {
             m_LicensePlate = i_License;
-            for(int i = 0; i < i_AmountOfWheels; i++)
+            for (int i = 0; i < i_AmountOfWheels; i++)
             {
                 r_Wheels.Add(new Wheel(i_MaxAirPressure));
             }
@@ -35,6 +35,32 @@ namespace Ex03.GarageLogic
             }
         }
 
+        public string ModelName
+        {
+            get
+            {
+                return m_VehicleModel;
+            }
+
+            private set
+            {
+                m_VehicleModel = value;
+            }
+        }
+
+        public float PercentageOfRemainingEnergy
+        {
+            get
+            {
+                return m_RemainingEnergy;
+            }
+
+            set
+            {
+                m_RemainingEnergy = value;
+            }
+        }
+
         public override string ToString()
         {
             return string.Format(
@@ -45,14 +71,57 @@ namespace Ex03.GarageLogic
                        m_VehicleModel, m_LicensePlate,  m_RemainingEnergy, Environment.NewLine);
         }
 
-        //public virtual List<string> BuildVehicleInputsList()
-        //{
-        //    List<string> vehicleInputsList = new List<string>();
+        public void SetModelName(string i_ModelName)
+        {
+            foreach (char ch in i_ModelName)
+            {
+                if (!(char.IsLetterOrDigit(ch) || char.IsWhiteSpace(ch)))
+                {
+                    throw new FormatException("You must enter characters or digits to the model name.");
+                }
+            }
 
-        //    vehicleInputsList.Add("the model name of the vehicle:");
-        //    Wheel.UpdateVehicleInputsList(vehicleInputsList);
+            this.ModelName = i_ModelName;
+        }
 
-        //    return vehicleInputsList;
-        //}
+        //***
+        public void SetListOfWheels(string i_ManufacturerName, string i_CurrentAirPressure)
+        {
+            foreach (char ch in i_ManufacturerName)
+            {
+                if (!(char.IsLetterOrDigit(ch) || char.IsWhiteSpace(ch)))
+                {
+                    throw new FormatException("You must enter characters or digits to the manufacturer name.");
+                }
+            }
+
+            float currAirPressureInput;
+            if (float.TryParse(i_CurrentAirPressure, out currAirPressureInput) == false)
+            {
+                throw new FormatException("You must enter a number to the current air pressure.");
+            }
+
+            if (!(currAirPressureInput >= 0 && currAirPressureInput <= r_Wheels[0].MaxAirPressure))
+            {
+                throw new ValueOutOfRangeException(0, r_Wheels[0].MaxAirPressure);
+            }
+
+            for (int i = 0; i < r_Wheels.Count; i++)
+            {
+                r_Wheels[i].Manufacture = i_ManufacturerName;
+                r_Wheels[i].CurrentAirPressure = currAirPressureInput;
+            }
+        }
+
+        //***
+        public virtual List<string> BuildVehicleInputsList()
+        {
+            List<string> vehicleInputsList = new List<string>();
+
+            vehicleInputsList.Add("the model name of the vehicle:");
+            Wheel.UpdateVehicleInputsList(vehicleInputsList);
+
+            return vehicleInputsList;
+        }
     }
 }
